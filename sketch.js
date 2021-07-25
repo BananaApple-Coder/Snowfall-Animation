@@ -8,9 +8,11 @@ var child1, child2
 var base1, base2
 var music
 var analyzer, rms
+var snowflake, snowImg
 
 function preload(){
   backImg = loadImage("snow1.jpg")
+  snowImg = loadImage("snow4.webp")
 
   music = loadSound("backMusic.mp3")
 }
@@ -48,9 +50,9 @@ function draw() {
   Engine.update(engine);
 
   rms = analyzer.getLevel(); //rms means root mean square(average amplitude)
-  //console.log(rms)
 
-  //jump()
+  jump()
+  snow()
 
   child1.display()
   child2.display()
@@ -60,32 +62,24 @@ function draw() {
 }
 
 function jump(){
-  if (frameCount % 150 === 0){
-    console.log(3)
-    let r1 = Math.round(random(1, 2))
-    //if (r1 === 1) {
-      console.log(1)
-      for(let i = 0; i < 10; i++){
-        //console.log(child1.y)
-        //console.log(rms)
-        setTimeout(() => { child1.y-=rms*5; }, 100);
-        //console.log(rms)
-        //console.log(child1.y)
-        console.log(5)
-      }
-      for(let i = 0; i < 10; i++){
-        console.log(child1.y)
-        setTimeout(() => { child1.y+=rms*5; }, 100);
-        console.log(child1.y)
-      }
-      console.log(9)
-    } else {
-      console.log(2)
-      for(let i = 0; i < 10; i++){
-         child2.y-=rms*5
-      }
-      for(let i = 0; i < 10; i++){
-        child2.y+=rms*5
-      }
+  let divisor = Math.round(random(100, 200))
+  if (frameCount % divisor === 0){
+    divisor = Math.round(random(100, 200))
+    if (Math.round(random(1,2)) === 1){
+      Matter.Body.applyForce(child1.body, child1.body.position, {x:0, y:-rms*1000})
+    }else{
+      Matter.Body.applyForce(child2.body, child2.body.position, {x:0, y:-rms*1000})
     }
-  }  
+  }
+}    
+
+
+function snow(){
+  if(frameCount%10===0){
+    snowflake = createSprite(Math.round(random(0,800)),0);
+    snowflake.scale=rms/2;
+    snowflake.addImage(snowImg)
+    snowflake.velocityY=rms*20;
+    snowflake.setLifetime=100;
+  } 
+}
